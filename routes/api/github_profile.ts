@@ -8,12 +8,15 @@ export interface User {
 }
 
 export const handler: Handlers<User | null> = {
-  async GET(_, ctx) {
+  async GET(_) {
     const resp = await fetch(`https://api.github.com/users/mitubaEX`);
     if (resp.status === 404) {
-      return ctx.render(null);
+      return new Response(null)
     }
     const user: User = await resp.json();
-    return ctx.render(user);
+    const { login, name, avatar_url } = user;
+    return new Response(JSON.stringify({ login, name, avatar_url }), {
+      headers: { "Content-Type": "application/json" },
+    })
   },
 };
